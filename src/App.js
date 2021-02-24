@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Dashboard from './components/Dashboard'
 import { withRename } from './producers/withRename'
 import { withNewDashboard } from './producers/withNewDashboard'
@@ -37,6 +37,17 @@ const App = () => {
   const updateTodo = (dashboardId, todoId, title, desc) => {
     setDashboards(withUpdatedTodo(dashboards, dashboardId, todoId, title, desc))
   }
+
+  useEffect(() => {
+    fetch('http://localhost:3080/api/todo').then((resp) => resp.json()).then((data) => setDashboards(data));
+  }, [])
+  useEffect(() => {
+    fetch('http://localhost:3080/api/todo', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(dashboards)
+    })
+  }, [dashboards])
 
   return (
     <div>
